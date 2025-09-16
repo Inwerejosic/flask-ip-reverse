@@ -29,3 +29,4 @@ kube-prometheus-stack:
     adminPassword: admin
     service:
       type: LoadBalancer # optional: exposes Grafana externally
+      port: 3000
