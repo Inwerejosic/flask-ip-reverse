@@ -5,12 +5,12 @@ metadata:
   namespace: actix
   labels:
     app: {{ include "flask-ip-reverse.name" . }}
-    managed-by: argocd
 spec:
   type: {{ .Values.service.type }}
   selector:
     app: {{ include "flask-ip-reverse.name" . }}
   ports:
-    - protocol: TCP
+    - name: http         # <-- important
+      protocol: TCP
       port: {{ .Values.service.port }}
       targetPort: 5000
