@@ -1,0 +1,80 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>IP Reverse Viewer</title>
+  <style>
+    :root{ --bg:#f5f7fb; --card:#ffffff; --muted:#666; --accent:#2463eb; --mono:ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace}
+    body{font-family:system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial; background:var(--bg); margin:0; padding:24px; color:#111}
+    .container{max-width:900px;margin:0 auto}
+    header{display:flex;align-items:center;justify-content:space-between;margin-bottom:18px}
+    h1{font-size:1.25rem;margin:0}
+    .card{background:var(--card);border-radius:12px;padding:18px;box-shadow:0 6px 18px rgba(20,30,80,0.06);margin-bottom:12px}
+    .ipbox{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+    .big{font-family:var(--mono);font-size:1.125rem;padding:8px 12px;border-radius:8px;background:#fbfdff;border:1px solid #eef3ff}
+    .muted{color:var(--muted);font-size:0.9rem}
+    table{width:100%;border-collapse:collapse;margin-top:12px}
+    th,td{padding:10px 8px;text-align:left;border-bottom:1px solid #f0f4fb;font-size:0.95rem}
+    th{color:var(--muted);font-weight:600;font-size:0.85rem}
+    .btn{background:var(--accent);color:white;padding:8px 12px;border-radius:8px;border:0;cursor:pointer}
+    .clear{background:#ef4444}
+    .note{font-size:0.85rem;color:#444;margin-top:8px}
+    footer{margin-top:18px;color:var(--muted);font-size:0.85rem;text-align:center}
+    @media (max-width:640px){ header{flex-direction:column;align-items:flex-start;gap:8px} }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <h1>IP Reverse Viewer</h1>
+      <div class="muted">Reverse octets/groups and show recent visitors</div>
+    </header>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap">
+        <div>
+          <div class="muted">Your detected IP</div>
+          <div class="ipbox" style="margin-top:8px">
+            <div class="big">{{ ip }}</div>
+            <div style="display:flex;flex-direction:column">
+              <div class="muted">Reversed</div>
+              <div class="big" style="margin-top:6px">{{ reversed_ip }}</div>
+            </div>
+          </div>
+          <div class="note">Note: IPs come from request headers - if your setup uses a proxy or VPN the shown IP may reflect that.</div>
+        </div>
+
+        <div style="text-align:right">
+          <form method="post" action="{{ url_for('clear') }}" onsubmit="return confirm('Clear all stored visits?');">
+            <button type="submit" class="btn clear">Clear stored visits</button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="muted">Recent visitors (newest first)</div>
+      <table aria-live="polite">
+        <thead>
+          <tr><th>#</th><th>Original IP</th><th>Reversed</th><th>Timestamp (UTC)</th></tr>
+        </thead>
+        <tbody>
+          {% for v in visits %}
+          <tr>
+            <td>{{ loop.index }}</td>
+            <td style="font-family:var(--mono)">{{ v.ip }}</td>
+            <td style="font-family:var(--mono)">{{ v.reversed_ip }}</td>
+            <td>{{ v.ts.strftime('%Y-%m-%d %H:%M:%S') }}</td>
+          </tr>
+          {% else %}
+          <tr><td colspan="4" style="text-align:center;color:var(--muted)">No visits yet.</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <footer>Built with Flask • Stored in SQLite</footer>
+  </div>
+</body>
+</html>
