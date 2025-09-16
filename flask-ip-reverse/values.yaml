@@ -14,6 +14,7 @@ nodeSelector: {}
 tolerations: []
 affinity: {}
 
+# kube-prometheus-stack minimal settings
 kube-prometheus-stack:
   grafana:
     enabled: true
@@ -21,8 +22,15 @@ kube-prometheus-stack:
     adminPassword: admin
     service:
       type: LoadBalancer
-
-flaskServiceMonitor:
-  enabled: true
-  interval: 15s
-  path: /metrics
+  prometheus:
+    prometheusSpec:
+      serviceMonitorSelectorNilUsesHelmValues: false
+      additionalServiceMonitors:
+        - name: flask-ip-reverse
+          selector:
+            matchLabels:
+              app: flask-ip-reverse
+          endpoints:
+            - port: 5000
+              path: /metrics
+              interval: 15s
