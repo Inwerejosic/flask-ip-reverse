@@ -1,16 +1,31 @@
+# Flask app configuration
 replicaCount: 1
+
 image:
   repository: docker.io/inwerejosic/flask-ip-reverse
   tag: "1.1"
   pullPolicy: IfNotPresent
+
 service:
   type: LoadBalancer
   port: 5000
+
 resources: {}
 nodeSelector: {}
 tolerations: []
 affinity: {}
+
+# ServiceMonitor for Prometheus
 serviceMonitor:
   enabled: true
   interval: 15s
   path: /metrics
+
+# kube-prometheus-stack configuration
+kube-prometheus-stack:
+  grafana:
+    enabled: true        # enable Grafana
+    adminUser: admin     # optional default credentials
+    adminPassword: admin
+    service:
+      type: LoadBalancer # optional: exposes Grafana externally
