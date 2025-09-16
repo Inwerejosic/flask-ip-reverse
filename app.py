@@ -1,6 +1,7 @@
 from datetime import datetime
-from flask import Flask, request, render_template, redirect, url_for
+from flask import Flask, request, render_template, redirect, url_for, Response
 from flask_sqlalchemy import SQLAlchemy
+from prometheus_client import Counter, generate_latest, CONTENT_TYPE_LATEST
 import os
 import re
 
@@ -15,6 +16,9 @@ db_path = os.path.join(data_dir, "visits.db")
 app.config['SQLALCHEMY_DATABASE_URI'] = f"sqlite:///{db_path}"
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
+
+# Prometheus metric: total HTTP requests
+REQUEST_COUNT = Counter("http_requests_total", "Total HTTP requests", ["method", "endpoint"])
 
 class Visit(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -48,6 +52,9 @@ def reverse_ip(ip):
 with app.app_context():
     db.create_all()
 
+@app.before_request
+def before_request():
+    REQUEST_COUNT.labels(method=request.method, endpoint=request.path).inc()
 
 @app.route("/", methods=["GET"])
 def index():
@@ -69,6 +76,10 @@ def clear():
 def healthz():
     return "OK", 200
 
+# Prometheus metrics endpoint
+@app.route("/metrics")
+def metrics():
+    return Response(generate_latest(), mimetype=CONTENT_TYPE_LATEST)
 
 if __name__ == "__main__":
     app.run(host="0.0.0.0", port=5000, debug=True)
