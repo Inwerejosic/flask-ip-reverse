@@ -3,4 +3,4 @@ name: flask-ip-reverse
 description: Minimal Flask app with lightweight Prometheus monitoring
 type: application
 version: 1.0.0
-appVersion: "1.1"
+appVersion: "1.2"
