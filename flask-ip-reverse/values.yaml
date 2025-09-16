@@ -1,0 +1,28 @@
+replicaCount: 1
+
+image:
+  repository: docker.io/inwerejosic/flask-ip-reverse
+  tag: "1.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: LoadBalancer
+  port: 5000
+
+resources: {}
+nodeSelector: {}
+tolerations: []
+affinity: {}
+
+kube-prometheus-stack:
+  grafana:
+    enabled: true
+    adminUser: admin
+    adminPassword: admin
+    service:
+      type: LoadBalancer
+
+flaskServiceMonitor:
+  enabled: true
+  interval: 15s
+  path: /metrics
