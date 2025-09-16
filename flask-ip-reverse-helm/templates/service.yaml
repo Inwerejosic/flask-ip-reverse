@@ -10,7 +10,7 @@ spec:
   selector:
     app: {{ include "flask-ip-reverse.name" . }}
   ports:
-    - name: http         # <-- important
+    - name: http
       protocol: TCP
       port: {{ .Values.service.port }}
       targetPort: 5000

@@ -3,5 +3,5 @@
 {{- end }}
 
 {{- define "flask-ip-reverse.fullname" -}}
-{{- printf "%s-%s" .Release.Name .Chart.Name | trunc 63 | trimSuffix "-" -}}
+{{- printf "%s-%s" .Release.Name .Chart.Name | replace "." "-" | trunc 63 | trimSuffix "-" -}}
 {{- end }}
