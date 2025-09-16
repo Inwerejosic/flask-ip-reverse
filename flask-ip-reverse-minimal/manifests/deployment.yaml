@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: flask-ip-reverse
+  namespace: actix
+  labels:
+    app: flask-ip-reverse
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: flask-ip-reverse
+  template:
+    metadata:
+      labels:
+        app: flask-ip-reverse
+    spec:
+      containers:
+        - name: flask-ip-reverse
+          image: docker.io/inwerejosic/flask-ip-reverse:1.0
+          ports:
+            - containerPort: 5000
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: flask-ip-reverse
+  namespace: actix
+  labels:
+    app: flask-ip-reverse
+spec:
+  type: LoadBalancer
+  selector:
+    app: flask-ip-reverse
+  ports:
+    - protocol: TCP
+      port: 5000
+      targetPort: 5000
