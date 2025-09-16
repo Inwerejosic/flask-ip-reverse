@@ -3,9 +3,9 @@ name: Build and Push Docker image
 on:
   push:
     branches:
-      - main   
+      - main
     tags:
-      - 'v*.*.*'   
+      - 'v*.*.*'
 
 jobs:
   build:
@@ -18,7 +18,7 @@ jobs:
 
       # Log in to Docker Hub
       - name: Log in to Docker Hub
-        uses: docker/login-action@v3
+        uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
@@ -31,13 +31,13 @@ jobs:
           # Always build with :latest and commit SHA
           TAGS="$IMAGE_NAME:latest,$IMAGE_NAME:${GITHUB_SHA}"
           # If this is a tagged release, add version tag too
-          if [[ "${GITHUB_REF_TYPE}" == "tag" ]]; then
-            VERSION_TAG=${GITHUB_REF_NAME#v}
+          if [[ "${GITHUB_REF}" == refs/tags/v* ]]; then
+            VERSION_TAG=${GITHUB_REF#refs/tags/v}
             TAGS="$TAGS,$IMAGE_NAME:$VERSION_TAG"
           fi
           echo "tags=$TAGS" >> $GITHUB_OUTPUT
 
-      # Build and push image
+      # Build and push Docker image
       - name: Build and push Docker image
         uses: docker/build-push-action@v5
         with:
