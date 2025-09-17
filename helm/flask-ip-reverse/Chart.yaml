@@ -1,6 +1,0 @@
-apiVersion: v2
-name: flask-ip-reverse
-description: "Helm chart for Flask IP Reverse application"
-type: application
-version: 0.1.0
-appVersion: "1.0.0"

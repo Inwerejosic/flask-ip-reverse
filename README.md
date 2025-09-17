@@ -134,7 +134,7 @@ git push origin v1.0.0
 
 ## 📜 License
 
-MIT License © 2025 [Your Name](https://github.com/<your-username>)
+MIT License © 2025 [Joseph Chukwuka Inweregbu](https://github.com/inwerejosic)
 
 ```
 
