@@ -1,7 +1,7 @@
 # Flask app
 replicaCount: 1
 image:
-  repository: docker.io/inwerejosic/flask-ip-reverse
+  repository: inwerejosic/flask-ip-reverse
   tag: "1.2"
   pullPolicy: IfNotPresent
 
